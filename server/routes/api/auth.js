@@ -11,7 +11,7 @@ import User from '../../models/user';
 const router = express.Router();
 
 // @route    POST  api/auth
-// @desc     Auth  user
+// @desc     Auth  user [Login]
 // @access   Public
 router.post('/', (req, res) => {
   const { email, password } = req.body;
@@ -25,6 +25,7 @@ router.post('/', (req, res) => {
     if (!user) return res.status(400).json({ msg: '유저가 존재하지 않습니다' });
 
     // Validate password
+    /* bcrypt (클라이언트가 입력한 값, DB 값) */
     bcrypt.compare(password, user.password).then((isMatch) => {
       if (!isMatch) return res.status(400).json({ msg: '비밀번호가 일치하지 않습니다' });
       jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '2 days' }, (err, token) => {
@@ -43,6 +44,7 @@ router.post('/', (req, res) => {
   });
 });
 
+/* 추후 Redux Saga를 통한 처리 */
 router.post('/logout', (req, res) => {
   res.json('로그아웃 성공');
 });

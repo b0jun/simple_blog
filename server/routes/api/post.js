@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
   res.json(postFindResult);
 });
 
+/* 인증된 사용자만 포스트 작성할 수 있게 설정 */
 router.post('/', auth, async (req, res, next) => {
   try {
     console.log(req, 'req');
