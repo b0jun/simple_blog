@@ -450,7 +450,6 @@ module.exports = function (webpackEnv) {
               test: cssRegex,
               //ADDED: CKEditor5 Setting
               exclude: [cssModuleRegex, /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/],
-              // exclude: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
                 sourceMap: isEnvProduction && shouldUseSourceMap,
@@ -529,7 +528,6 @@ module.exports = function (webpackEnv) {
                 /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
                 /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
               ],
-              // exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
               options: {
                 name: 'static/media/[name].[hash:8].[ext]',
               },

@@ -4,8 +4,13 @@ import {
   POSTS_LOADING_FAILURE,
   POSTS_LOADING_REQUEST,
   POSTS_LOADING_SUCCESS,
+  POST_UPLOAD_SUCCESS,
+  POST_UPLOAD_FAILURE,
+  POST_UPLOAD_REQUEST
 } from '../types';
 import axios from 'axios';
+
+// All Posts load
 
 const loadPostAPI = () => {
   return axios.get('/api/post');
@@ -14,7 +19,7 @@ const loadPostAPI = () => {
 function* loadPosts() {
   try {
     const result = yield call(loadPostAPI);
-    console.log('result: ', result);
+    console.log('loadPosts: ', result);
     yield put({
       type: POSTS_LOADING_SUCCESS,
       payload: result.data,
@@ -32,6 +37,45 @@ function* watchLoadPosts() {
   yield takeEvery(POSTS_LOADING_REQUEST, loadPosts);
 }
 
+// Post Upload
+
+const uploadPostAPI = (payload) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  const token = payload.token;
+  if (token) {
+    config.headers['x-auth-token'] = token;
+  }
+  return axios.post('/api/post', payload, config);
+};
+
+function* uploadPosts(action) {
+  try {
+    console.log('uploadPost function: ', action);
+    const result = yield call(uploadPostAPI, action.payload);
+    console.log(result, "@uploadPostAPI, action.payload@")
+    yield put({
+      type: POST_UPLOAD_SUCCESS,
+      payload: result.data,
+    });
+    //업로드 성공시 리다이렉트
+    yield put(push(`/post/${result.data._id}`));
+  } catch (e) {
+    yield put({
+      type: POST_UPLOAD_FAILURE,
+      payload: e,
+    });
+    yield push('/');
+  }
+}
+
+function* watchUploadPosts() {
+  yield takeEvery(POST_UPLOAD_REQUEST, uploadPosts);
+}
+
 export default function* postSaga() {
-  yield all([fork(watchLoadPosts)]);
+  yield all([fork(watchLoadPosts, fork(watchUploadPosts))]);
 }
