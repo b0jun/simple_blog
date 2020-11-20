@@ -17,7 +17,9 @@ import RegisterModal from './auth/RegisterModal';
 
 const AppNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, user, userRole } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, userRole } = useSelector(
+    (state) => state.auth
+  );
   console.log('UserRole: ', userRole);
 
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ const AppNavbar = () => {
     });
   }, [dispatch]);
 
+  // 로그인 시 모달 닫기
   useEffect(() => {
     setIsOpen(false);
   }, [user]);

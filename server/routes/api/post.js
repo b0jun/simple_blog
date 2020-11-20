@@ -76,6 +76,7 @@ router.post('/', auth, uploadS3.none(), async (req, res, next) => {
 
     console.log(findResult, 'Find Result!!!!');
 
+    //$push : 배열에 넣기
     if (isNullOrUndefined(findResult)) {
       const newCategory = await Category.create({
         categoryName: category,
@@ -115,16 +116,15 @@ router.post('/', auth, uploadS3.none(), async (req, res, next) => {
 // @desc    Detail Post
 // @access  Public
 
-router.get('/:id', async(req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
       .populate('creator', 'name')
-      .populate({path: 'category', select: 'categoryName'});
-
+      .populate({ path: 'category', select: 'categoryName' });
   } catch (e) {
     console.error(e);
     next(e);
   }
-})
+});
 
 export default router;

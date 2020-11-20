@@ -44,7 +44,7 @@ function* loginUser(action) {
     });
   }
 }
-
+/* LOGIN_REQUEST가 들어오는지 계속 보고 있다가 오면 loginUser 호출 */
 function* watchLoginUser() {
   yield takeEvery(LOGIN_REQUEST, loginUser);
 }
