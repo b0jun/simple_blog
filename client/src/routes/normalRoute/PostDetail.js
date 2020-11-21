@@ -16,17 +16,18 @@ const PostDetail = (req) => {
     (state) => state.post
   );
   const { userId, userName } = useSelector((state) => state.auth);
-
+  console.log(req, ': req');
   useEffect(() => {
     dispatch({
       type: POST_DETAIL_LOADING_REQUEST,
       payload: req.match.params.id,
     });
+    //글쓴 사람만 보이게하기 위해서
     dispatch({
       type: USER_LOADING_REQUEST,
       payload: localStorage.getItem('token'),
     });
-  });
+  }, []);
 
   const onDeleteClick = () => {
     dispatch({
@@ -48,7 +49,7 @@ const PostDetail = (req) => {
         </Col>
         <Col className="col-md-3 mr-md-3">
           <Link
-            to={`/post/${req.match.parasm.id}/edit`}
+            to={`/posts/${req.match.params.id}/edit`}
             className="btn btn-success btn-block"
           >
             Edit Post
@@ -74,7 +75,7 @@ const PostDetail = (req) => {
       </Row>
     </>
   );
-
+  console.log(title);
   return <div>PostDetail</div>;
 };
 

@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Form, FormGroup, Input, Label, Progress } from 'reactstrap';
+import {
+  Button,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Progress,
+} from 'reactstrap';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { editorConfiguration } from '../../components/editor/EditorConfig';
 import Myinit from '../../components/editor/UploadAdapter';
+import { POST_UPLOAD_REQUEST } from '../../redux/types';
 
 const PostWrite = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -19,6 +28,12 @@ const PostWrite = () => {
   const onSubmit = async (e) => {
     await e.preventDefault();
     const { title, contents, fileUrl, category } = form;
+    const token = localStorage.getItem('token');
+    const body = { title, contents, fileUrl, category, token };
+    dispatch({
+      type: POST_UPLOAD_REQUEST,
+      payload: body,
+    });
   };
 
   const getDataFromCKEditor = (event, editor) => {
@@ -96,7 +111,11 @@ const PostWrite = () => {
               onInit={Myinit}
               onBlur={getDataFromCKEditor}
             />
-            <Button color="success" block className="mt-3 col-md-2 offset-md-10 mb-3">
+            <Button
+              color="success"
+              block
+              className="mt-3 col-md-2 offset-md-10 mb-3"
+            >
               제출하기
             </Button>
           </FormGroup>
