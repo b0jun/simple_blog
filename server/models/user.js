@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
       },
       comment_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments',
+        ref: 'comment',
       },
     },
   ],

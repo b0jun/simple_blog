@@ -11,6 +11,9 @@ import multerS3 from 'multer-s3';
 import path from 'path';
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
+import moment from 'moment';
+import { isNullOrUndefined } from 'util';
+
 dotenv.config();
 
 const s3 = new AWS.S3({
@@ -60,7 +63,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', auth, uploadS3.none(), async (req, res, next) => {
   try {
-    console.log(req, 'req');
+    console.log(req.body, 'req@@@@@@@@@@@@@@@');
     const { title, contents, fileUrl, creator, category } = req.body;
     const newPost = await Post.create({
       title,
@@ -121,6 +124,11 @@ router.get('/:id', async (req, res, next) => {
     const post = await Post.findById(req.params.id)
       .populate('creator', 'name')
       .populate({ path: 'category', select: 'categoryName' });
+    console.log(post);
+    // post.views += 1;
+    // post.save();
+    // console.log(post, '$$$$$$$$$$$$$$$$');
+    // res.json(post);
   } catch (e) {
     console.error(e);
     next(e);

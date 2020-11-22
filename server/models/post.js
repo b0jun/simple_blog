@@ -35,7 +35,7 @@ const PostSchema = new mongoose.Schema({
   ],
   creator: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'uesr',
+    ref: 'user',
   },
 });
 const Post = mongoose.model('post', PostSchema);
