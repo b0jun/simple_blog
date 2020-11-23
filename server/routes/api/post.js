@@ -62,7 +62,6 @@ router.get('/', async (req, res) => {
 // @route    POST api/post
 // @desc     Create a Post
 // @access   Private
-
 router.post('/', auth, uploadS3.none(), async (req, res, next) => {
   try {
     console.log(req.body, 'req@@@@@@@@@@@@@@@');
@@ -120,7 +119,6 @@ router.post('/', auth, uploadS3.none(), async (req, res, next) => {
 // @route   POST api/post/:id
 // @desc    Detail Post
 // @access  Public
-
 router.get('/:id', async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
@@ -133,6 +131,34 @@ router.get('/:id', async (req, res, next) => {
     console.error(e);
     next(e);
   }
+});
+
+// @route    Delete api/post/:id
+// @desc     Delete a Post
+// @access   Private
+router.delete('/:id', auth, async (req, res) => {
+  await Post.deleteMany({ _id: req.params.id });
+  await Comment.deleteMany({ post: req.params.id });
+  //$pull : 배열에서 빼기
+  await User.findByIdAndUpdate(req.user.id, {
+    $pull: {
+      posts: req.params.id,
+      comments: { post_id: req.params.id },
+    },
+  });
+
+  //new를 설정해야 반드시 업데이트가 적용이됨
+  //https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+  const CategoryUpdateResult = await Category.findOneAndUpdate(
+    { posts: req.params.id },
+    { $pull: { posts: req.params.id } },
+    { new: true }
+  );
+  //포스트를 지우고 그 카테고리가 0개가 되면, 카테고리를 삭제함
+  if (CategoryUpdateResult.posts.length === 0) {
+    await Category.deleteMany({ _id: CategoryUpdateResult });
+  }
+  return res.json({ success: true });
 });
 
 // [Comments Route]
