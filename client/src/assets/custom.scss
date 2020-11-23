@@ -21,6 +21,11 @@
   height: 20rem;
   object-fit: cover;
 }
+
+textarea {
+  resize: none;
+}
+
 // CkEditor5 Setting
 .ck {
   .ck-editor {

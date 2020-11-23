@@ -2,9 +2,9 @@ import {
   POSTS_LOADING_REQUEST,
   POSTS_LOADING_SUCCESS,
   POSTS_LOADING_FAILURE,
-  POSTS_WRITE_REQUEST,
-  POSTS_WRITE_SUCCESS,
-  POSTS_WRITE_FAILURE,
+  POST_UPLOAD_REQUEST,
+  POST_UPLOAD_SUCCESS,
+  POST_UPLOAD_FAILURE,
   POST_DETAIL_LOADING_REQUEST,
   POST_DETAIL_LOADING_SUCCESS,
   POST_DETAIL_LOADING_FAILURE,
@@ -43,18 +43,18 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
       };
-    case POSTS_WRITE_REQUEST:
+    case POST_UPLOAD_REQUEST:
       return {
         ...state,
         posts: [],
         loading: true,
       };
-    case POSTS_WRITE_SUCCESS:
+    case POST_UPLOAD_SUCCESS:
       return {
         ...state,
         loading: false,
       };
-    case POSTS_WRITE_FAILURE:
+    case POST_UPLOAD_FAILURE:
       return {
         ...state,
         error: action.payload,

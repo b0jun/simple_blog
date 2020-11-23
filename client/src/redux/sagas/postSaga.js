@@ -14,7 +14,6 @@ import {
 import axios from 'axios';
 
 // All Posts load
-
 const loadPostAPI = () => {
   return axios.get('/api/post');
 };
@@ -41,7 +40,6 @@ function* watchLoadPosts() {
 }
 
 // Post Upload
-
 const uploadPostAPI = (payload) => {
   const config = {
     headers: {
@@ -80,7 +78,6 @@ function* watchUploadPosts() {
 }
 
 // Post Detail
-
 const loadPostDetailAPI = (payload) => {
   console.log(payload);
   return axios.get(`/api/post/${payload}`);

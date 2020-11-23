@@ -1,17 +1,19 @@
 import express from 'express';
 import auth from '../../middleware/auth';
+import dotenv from 'dotenv';
+import moment from 'moment';
+import multer from 'multer';
+import path from 'path';
+import multerS3 from 'multer-s3';
+import AWS from 'aws-sdk';
+
 import Post from '../../models/post';
 import User from '../../models/user';
 import Category from '../../models/category';
+import Comment from '../../models/comment';
 
 const router = express.Router();
 
-import multer from 'multer';
-import multerS3 from 'multer-s3';
-import path from 'path';
-import AWS from 'aws-sdk';
-import dotenv from 'dotenv';
-import moment from 'moment';
 import { isNullOrUndefined } from 'util';
 
 dotenv.config();
@@ -111,7 +113,7 @@ router.post('/', auth, uploadS3.none(), async (req, res, next) => {
     //글 작성후 그 글로 이동
     return res.redirect(`/api/post/${newPost._id}`);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 });
 
@@ -133,4 +135,53 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// [Comments Route]
+
+// @route Get /api/post/comments
+// @desc Get All Comments
+// @access public
+
+router.get('/:id/comments', async (req, res) => {
+  try {
+    const comment = await Post.findById(req.params.id).populate({
+      path: 'comments',
+    });
+    const result = comment.comments;
+    console.log(result, ':: comment load 결과');
+    res.json(result);
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+router.post('/:id/comments', async (req, res, next) => {
+  const newComment = await Comment.create({
+    contents: req.body.contents,
+    creator: req.body.userId,
+    creatorName: req.body.userName,
+    post: req.body.id,
+    date: moment().format('YYYY-MM-DD hh:mm:ss'),
+  });
+  console.log(newComment, 'newComment');
+
+  try {
+    await Post.findByIdAndUpdate(req.body.id, {
+      $push: {
+        comments: newComment._id,
+      },
+    });
+    await User.findByIdAndUpdate(req.body.userId, {
+      $push: {
+        comments: {
+          post_id: req.body.id,
+          comment_id: newComment._id,
+        },
+      },
+    });
+    res.json(newComment);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
 export default router;
