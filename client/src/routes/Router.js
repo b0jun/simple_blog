@@ -9,6 +9,8 @@ import PostWrite from './normalRoute/PostWrite';
 import PostDetail from './normalRoute/PostDetail';
 import Search from './normalRoute/Search';
 import CategoryResult from './normalRoute/CategoryResult';
+import PostEdit from './ProtectedRoute/PostEdit';
+import { EditProtectedRoute } from './ProtectedRoute';
 
 const MyRouter = () => (
   <>
@@ -19,7 +21,12 @@ const MyRouter = () => (
         <Route path="/" exact component={PostCardList} />
         <Route path="/posts" exact component={PostWrite} />
         <Route path="/posts/:id" exact component={PostDetail} />
-        <Route path="/posts/category/:categoryName" exact component={CategoryResult} />
+        <EditProtectedRoute path="/posts/:id/edit" exact component={PostEdit} />
+        <Route
+          path="/posts/category/:categoryName"
+          exact
+          component={CategoryResult}
+        />
         <Route path="/search/:searchTerm" exact component={Search} />
         <Redirect from="*" to="/" />
       </Switch>
