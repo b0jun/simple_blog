@@ -14,6 +14,9 @@ const {
   USER_LOADING_REQUEST,
   USER_LOADING_SUCCESS,
   USER_LOADING_FAILURE,
+  PASSWORD_EDIT_UPLOAD_REQUEST,
+  PASSWORD_EDIT_UPLOAD_SUCCESS,
+  PASSWORD_EDIT_UPLOAD_FAILURE,
 } = require('../types');
 
 const initialState = {
@@ -26,6 +29,7 @@ const initialState = {
   userRole: '',
   errorMsg: '',
   successMsg: '',
+  previousMatchMsg: '',
 };
 
 const authReducer = (state = initialState, action) => {
@@ -102,7 +106,27 @@ const authReducer = (state = initialState, action) => {
         isLoading: false,
         userRole: '',
       };
-
+    case PASSWORD_EDIT_UPLOAD_REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case PASSWORD_EDIT_UPLOAD_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        successMsg: action.payload.success_msg,
+        errorMsg: '',
+        previousMatchMsg: '',
+      };
+    case PASSWORD_EDIT_UPLOAD_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        successMsg: '',
+        errorMsg: action.payload.fail_msg,
+        previousMatchMsg: action.payload.match_msg,
+      };
     //모달창이 끝난 후, 에러를 지우지 않으면, 향후에 클릭시 에러가 그대로 남아있음
     case CLEAR_ERROR_REQUEST:
       return {
@@ -112,11 +136,13 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         errorMsg: '',
+        previousMatchMsg: '',
       };
     case CLEAR_ERROR_FAILURE:
       return {
         ...state,
         errorMsg: 'Clear Error Fail',
+        previousMatchMsg: 'Clear Error Fail',
       };
     default:
       return state;

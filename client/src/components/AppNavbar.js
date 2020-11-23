@@ -14,6 +14,7 @@ import LoginModal from './auth/LoginModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOGOUT_REQUEST } from '../redux/types';
 import RegisterModal from './auth/RegisterModal';
+import SearchInput from './search/searchInput';
 
 const AppNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +61,7 @@ const AppNavbar = () => {
       <NavItem className="d-flex justify-content-center">
         <Form className="col mt-2">
           {user && user.name ? (
-            <Link to="#">
+            <Link to={`/user/${user.name}/profile`}>
               <Button outline color="light" className="px-3" block>
                 <strong>{user ? `Welcome ${user.name}` : ''}</strong>
               </Button>
@@ -102,6 +103,7 @@ const AppNavbar = () => {
           </Link>
           <NavbarToggler onClick={handleToggle} />
           <Collapse isOpen={isOpen} navbar>
+            <SearchInput isOpen={isOpen} />
             <Nav className="ml-auto d-flex justify-content-around" navbar>
               {isAuthenticated ? authLink : guestLink}
             </Nav>

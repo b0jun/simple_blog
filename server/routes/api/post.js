@@ -54,8 +54,9 @@ router.post('/image', uploadS3.array('upload', 5), async (req, res, next) => {
 // api/post
 router.get('/', async (req, res) => {
   const postFindResult = await Post.find();
-  console.log(postFindResult, 'All Post Get');
-  res.json(postFindResult);
+  const categoryFindResult = await Category.find();
+  const result = { postFindResult, categoryFindResult };
+  res.json(result);
 });
 
 /* 인증된 사용자만 포스트 작성할 수 있게 설정 */
@@ -243,6 +244,31 @@ router.post('/:id/comments', async (req, res, next) => {
     res.json(newComment);
   } catch (e) {
     console.error(e);
+    next(e);
+  }
+});
+
+//[Category Route]
+
+// @route Get /api/post/category/:categoryName
+// @desc Get All Category
+// @access public
+router.get('/category/:categoryName', async (req, res, next) => {
+  try {
+    //https://docs.mongodb.com/manual/reference/operator/query/regex/
+    const result = await Category.findOne(
+      {
+        categoryName: {
+          $regex: req.params.categoryName,
+          $options: 'i',
+        },
+      },
+      'posts'
+    ).populate({ path: 'posts' });
+    console.log(result, 'Category Find result');
+    res.send(result);
+  } catch (e) {
+    console.log(e);
     next(e);
   }
 });
