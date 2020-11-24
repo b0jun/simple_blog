@@ -40,7 +40,9 @@ const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
 const isExtendingEslintConfig = process.env.EXTEND_ESLINT === 'true';
 
-const imageInlineSizeLimit = parseInt(process.env.IMAGE_INLINE_SIZE_LIMIT || '10000');
+const imageInlineSizeLimit = parseInt(
+  process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
+);
 
 // Check if TypeScript is setup
 const useTypeScript = fs.existsSync(paths.appTsConfig);
@@ -59,7 +61,8 @@ module.exports = function (webpackEnv) {
 
   // Variable used for enabling profiling in Production
   // passed into alias object. Uses a flag if passed into the build command
-  const isEnvProductionProfile = isEnvProduction && process.argv.includes('--profile');
+  const isEnvProductionProfile =
+    isEnvProduction && process.argv.includes('--profile');
 
   // We will provide `paths.publicUrlOrPath` to our app
   // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
@@ -75,7 +78,9 @@ module.exports = function (webpackEnv) {
         loader: MiniCssExtractPlugin.loader,
         // css is located in `static/css`, use '../../' to locate index.html folder
         // in production `paths.publicUrlOrPath` can be a relative path
-        options: paths.publicUrlOrPath.startsWith('.') ? { publicPath: '../../' } : {},
+        options: paths.publicUrlOrPath.startsWith('.')
+          ? { publicPath: '../../' }
+          : {},
       },
       {
         loader: require.resolve('css-loader'),
@@ -148,7 +153,8 @@ module.exports = function (webpackEnv) {
       // the line below with these two lines if you prefer the stock client:
       // require.resolve('webpack-dev-server/client') + '?/',
       // require.resolve('webpack/hot/dev-server'),
-      isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient'),
+      isEnvDevelopment &&
+        require.resolve('react-dev-utils/webpackHotDevClient'),
       // Finally, this is your app's code:
       paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
@@ -178,9 +184,12 @@ module.exports = function (webpackEnv) {
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
         ? (info) =>
-            path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/')
+            path
+              .relative(paths.appSrc, info.absoluteResourcePath)
+              .replace(/\\/g, '/')
         : isEnvDevelopment &&
-          ((info) => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+          ((info) =>
+            path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
       // Prevents conflicts when multiple webpack runtimes (from different apps)
       // are used on the same page.
       jsonpFunction: `webpackJsonp${appPackageJson.name}`,
@@ -360,7 +369,9 @@ module.exports = function (webpackEnv) {
               include: paths.appSrc,
               loader: require.resolve('babel-loader'),
               options: {
-                customize: require.resolve('babel-preset-react-app/webpack-overrides'),
+                customize: require.resolve(
+                  'babel-preset-react-app/webpack-overrides'
+                ),
 
                 plugins: [
                   [
@@ -368,11 +379,13 @@ module.exports = function (webpackEnv) {
                     {
                       loaderMap: {
                         svg: {
-                          ReactComponent: '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+                          ReactComponent:
+                            '@svgr/webpack?-svgo,+titleProp,+ref![path]',
                         },
                       },
                     },
                   ],
+                  ['transform-remove-console', { exclude: ['error', 'warn'] }],
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -431,7 +444,9 @@ module.exports = function (webpackEnv) {
                   loader: 'postcss-loader',
                   options: styles.getPostCssConfig({
                     themeImporter: {
-                      themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
+                      themePath: require.resolve(
+                        '@ckeditor/ckeditor5-theme-lark'
+                      ),
                     },
                     minify: true,
                   }),
@@ -449,7 +464,10 @@ module.exports = function (webpackEnv) {
             {
               test: cssRegex,
               //ADDED: CKEditor5 Setting
-              exclude: [cssModuleRegex, /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/],
+              exclude: [
+                cssModuleRegex,
+                /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+              ],
               use: getStyleLoaders({
                 importLoaders: 1,
                 sourceMap: isEnvProduction && shouldUseSourceMap,
@@ -596,7 +614,8 @@ module.exports = function (webpackEnv) {
       // to restart the development server for webpack to discover it. This plugin
       // makes the discovery automatic so you don't have to restart.
       // See https://github.com/facebook/create-react-app/issues/186
-      isEnvDevelopment && new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+      isEnvDevelopment &&
+        new WatchMissingNodeModulesPlugin(paths.appNodeModules),
       isEnvProduction &&
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output

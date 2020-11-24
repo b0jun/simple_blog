@@ -6,6 +6,7 @@ import multer from 'multer';
 import path from 'path';
 import multerS3 from 'multer-s3';
 import AWS from 'aws-sdk';
+import '@babel/polyfill';
 
 import Post from '../../models/post';
 import User from '../../models/user';
